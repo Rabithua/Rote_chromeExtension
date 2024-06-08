@@ -22,9 +22,9 @@ const manifest = Object.assign(
      * if you want to support multiple languages, you can use the following reference
      * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization
      */
-    name: 'Rote',
+    name: '__MSG_extensionName__',
     version: packageJson.version,
-    description: 'Rote is a simple and easy-to-use note app.',
+    description: '__MSG_extensionDescription__',
     permissions: ['storage', "contextMenus"].concat(sidePanelConfig.permissions),
     options_page: 'options/index.html',
     background: {
