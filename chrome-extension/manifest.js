@@ -22,10 +22,10 @@ const manifest = Object.assign(
      * if you want to support multiple languages, you can use the following reference
      * https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/Internationalization
      */
-    name: '__MSG_extensionName__',
+    name: 'Rote',
     version: packageJson.version,
-    description: '__MSG_extensionDescription__',
-    permissions: ['storage'].concat(sidePanelConfig.permissions),
+    description: 'Rote is a simple and easy-to-use note app.',
+    permissions: ['storage', "contextMenus"].concat(sidePanelConfig.permissions),
     options_page: 'options/index.html',
     background: {
       service_worker: 'background.iife.js',
@@ -33,32 +33,32 @@ const manifest = Object.assign(
     },
     action: {
       default_popup: 'popup/index.html',
-      default_icon: 'icon-34.png',
+      default_icon: 'LOGO-34.png',
     },
     chrome_url_overrides: {
       newtab: 'newtab/index.html',
     },
     icons: {
-      128: 'icon-128.png',
+      128: 'LOGO-128.png',
     },
     content_scripts: [
-      {
-        matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-        js: ['content/index.iife.js'],
-      },
-      {
-        matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-        js: ['content-ui/index.iife.js'],
-      },
-      {
-        matches: ['http://*/*', 'https://*/*', '<all_urls>'],
-        css: ['content.css'], // public folder
-      },
+      // {
+      //   matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+      //   js: ['content/index.iife.js'],
+      // },
+      // {
+      //   matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+      //   js: ['content-ui/index.iife.js'],
+      // },
+      // {
+      //   matches: ['http://*/*', 'https://*/*', '<all_urls>'],
+      //   css: ['content.css'], // public folder
+      // },
     ],
     devtools_page: 'devtools/index.html',
     web_accessible_resources: [
       {
-        resources: ['*.js', '*.css', '*.svg', 'icon-128.png', 'icon-34.png'],
+        resources: ['*.js', '*.css', '*.svg', 'LOGO-128.png', 'LOGO-34.png'],
         matches: ['*://*/*'],
       },
     ],

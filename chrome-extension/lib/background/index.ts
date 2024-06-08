@@ -1,9 +1,21 @@
-import 'webextension-polyfill';
-import { exampleThemeStorage } from '@chrome-extension-boilerplate/storage';
-
-exampleThemeStorage.get().then(theme => {
-  console.log('theme', theme);
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.contextMenus.create({
+    type: 'normal',
+    title: 'Rote记录选中文本',
+    id: 'Rote-record-text',
+    contexts: ['selection'],
+  });
 });
 
-console.log('background loaded');
-console.log("Edit 'apps/chrome-extension/lib/background/index.ts' and save to reload.");
+chrome.contextMenus.onClicked.addListener(info => {
+  chrome.storage.local.get('content', res => {
+    chrome.storage.local.set({ content: [...res.content, info.selectionText + '\n'] });
+  });
+});
+
+chrome.runtime.onMessage.addListener(function (request) {
+  if (request.action == 'open_popup') {
+    // 打开插件
+    window.open(chrome.runtime.getURL('popup/index.html'));
+  }
+});
