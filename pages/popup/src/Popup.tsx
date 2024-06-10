@@ -145,6 +145,9 @@ const Popup = () => {
     return (
       <div className=" flex flex-col gap-2">
         <p className=" text-base font-mono text-gray-500">需要配置OpenKey</p>
+        <p className=" text-sm font-mono text-gray-300">
+          例如在 <a href="https://rote.ink">https://rote.ink</a> 中注册并在 我的 页面中复制 openkeyUrl{' '}
+        </p>
         <textarea
           className="p-3 w-full bg-slate-50 border rounded-md"
           placeholder="https://api.rote.ink/v1/api/openkey/onerote?openkey=661fxxxxxx195fb25&content=这是一条使用OpenKey发送的笔记。&tag=FromOpenKey&tag=标签二&state=private"
