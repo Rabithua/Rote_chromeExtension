@@ -1,5 +1,4 @@
 import '@src/Popup.css';
-import { withErrorBoundary, withSuspense } from '@chrome-extension-boilerplate/shared';
 import { useEffect, useState } from 'react';
 
 const Popup = () => {
@@ -272,4 +271,4 @@ const Popup = () => {
   );
 };
 
-export default withErrorBoundary(withSuspense(Popup, <div> Loading ... </div>), <div> Error Occur </div>);
+export default Popup;

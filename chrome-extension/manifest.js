@@ -19,7 +19,7 @@ const manifest = Object.assign(
     version: packageJson.version,
     description: '__MSG_extensionDescription__',
     permissions: ['storage', "contextMenus"],
-    options_page: 'options/index.html',
+    // options_page: 'options/index.html',
     background: {
       service_worker: 'background.iife.js',
       type: 'module',
@@ -28,9 +28,9 @@ const manifest = Object.assign(
       default_popup: 'popup/index.html',
       default_icon: 'LOGO-34.png',
     },
-    chrome_url_overrides: {
-      newtab: 'newtab/index.html',
-    },
+    // chrome_url_overrides: {
+    //   newtab: 'newtab/index.html',
+    // },
     icons: {
       128: 'LOGO-128.png',
     },
