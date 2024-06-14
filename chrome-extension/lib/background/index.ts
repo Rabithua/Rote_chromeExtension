@@ -1,7 +1,7 @@
 chrome.runtime.onInstalled.addListener(() => {
   chrome.contextMenus.create({
     type: 'normal',
-    title: 'Rote记录选中文本',
+    title: '缓存选中文本',
     id: 'Rote-record-text',
     contexts: ['selection'],
   });
