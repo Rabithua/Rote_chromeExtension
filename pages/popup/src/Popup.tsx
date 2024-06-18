@@ -2,7 +2,10 @@ import '@src/Popup.css';
 import { useEffect, useState } from 'react';
 
 const Popup = () => {
-  const [msg, setMsg] = useState('');
+  const [msg, setMsg] = useState<{
+    type: 'success' | 'error';
+    content: string;
+  } | null>(null);
   const [content, setContent] = useState<string[]>([]);
   const [openKey, setOpenKey] = useState<{ url: string; key: string } | null>(null);
   const [current, setCurrent] = useState<number>(0);
@@ -14,6 +17,20 @@ const Popup = () => {
     state: 'private',
     pin: false,
   });
+  const [msgTimer, setMsgTimer] = useState<number | null>(null);
+
+  useEffect(() => {
+    if (msg) {
+      if (msgTimer) {
+        clearTimeout(msgTimer);
+      }
+      const timer = setTimeout(() => {
+        setMsg(null);
+      }, 2000);
+      setMsgTimer(timer);
+    }
+  }, [msg]);
+
   type Rote = {
     title: string;
     content: string;
@@ -26,6 +43,9 @@ const Popup = () => {
 
   useEffect(() => {
     chrome.storage.local.get('content', res => {
+      if (!res.content) {
+        return;
+      }
       setContent(res.content);
       setNewRote({ ...newRote, content: res.content[0] });
     });
@@ -71,44 +91,61 @@ const Popup = () => {
     setSubmitting(true);
     if (!openKey) {
       setSubmitting(false);
-      setMsg('请先配置OpenKey');
+      setMsg({
+        type: 'error',
+        content: '请先配置OpenKey',
+      });
       return;
     }
-    if (newRote.content.length > 0) {
-      fetch(openKey.url, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ ...newRote, openkey: openKey.key }),
-      })
-        .then(async response => {
-          const data = await response.json();
-          if (data.code === 0) {
-            setSubmitting(false);
-            const ctx = content;
-            ctx.splice(current, 1);
-            setMsg('发送成功');
-            setTimeout(() => {
-              setMsg('');
-            }, 2000);
-            setContent(ctx);
-            setNewRote({ ...newRote, content: '' });
-            chrome.storage.local.set({ content: ctx });
-          } else {
-            setSubmitting(false);
-            setMsg('发送失败' + JSON.stringify(data));
-          }
-        })
-        .catch(error => {
-          setSubmitting(false);
-          setMsg(
-            '发送失败:' +
-              error.message +
-              `（如果后端配置了CORS环境变量，请添加 chrome-extension://nknoigihdogoiojelolkdmgafhealbhn 允许插件的跨域请求！）`,
-          );
-        });
+    if (newRote.content.length === 0) {
+      setMsg({
+        type: 'error',
+        content: '内容不能为空',
+      });
+      setSubmitting(false);
+      return;
     }
+    fetch(openKey.url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ ...newRote, openkey: openKey.key }),
+    })
+      .then(async response => {
+        const data = await response.json();
+        if (data.code === 0) {
+          setSubmitting(false);
+          const ctx = content;
+          ctx.splice(current, 1);
+          setMsg({
+            type: 'success',
+            content: '发送成功',
+          });
+          setTimeout(() => {
+            setMsg(null);
+          }, 2000);
+          setContent(ctx);
+          setNewRote({ ...newRote, content: '' });
+          chrome.storage.local.set({ content: ctx });
+        } else {
+          setSubmitting(false);
+          setMsg({
+            type: 'error',
+            content: '发送失败:' + data.message,
+          });
+        }
+      })
+      .catch(error => {
+        setSubmitting(false);
+        setMsg({
+          type: 'error',
+          content:
+            '发送失败:' +
+            error.message +
+            `（如果后端配置了CORS环境变量，请添加 chrome-extension://nknoigihdogoiojelolkdmgafhealbhn 允许插件的跨域请求！）`,
+        });
+      });
   }
 
   function reSetOpenkey() {
@@ -137,11 +174,15 @@ const Popup = () => {
     function config() {
       const { url, key } = parseUrlAndKey(openKeyStr);
       if (url && key) {
-        setMsg('');
+        console.log(url, key);
+        setMsg(null);
         setOpenKey({ url, key });
         chrome.storage.local.set({ openKey: { url, key } });
       } else {
-        setMsg('解析失败');
+        setMsg({
+          type: 'error',
+          content: 'OpenKey解析失败',
+        });
       }
     }
 
@@ -270,7 +311,12 @@ const Popup = () => {
       ) : (
         <Config />
       )}
-      <div className=" text-sm text-red-500 ">{msg}</div>
+      {msg && (
+        <div
+          className={` text-sm px-2 py-1 rounded-md ${msg.type === 'success' ? 'text-lime-500 bg-lime-50' : 'text-red-500 bg-red-50'} `}>
+          {msg.content}
+        </div>
+      )}
     </div>
   );
 };
