@@ -143,7 +143,7 @@ const Popup = () => {
           content:
             '发送失败:' +
             error.message +
-            `（如果后端配置了CORS环境变量，请添加 chrome-extension://nknoigihdogoiojelolkdmgafhealbhn 允许插件的跨域请求！）`,
+            `（如果后端配置了CORS环境变量，请添加 chrome-extension://cahpbdbfdfnmoachkjmcfgbbnmjcbpej 允许插件的跨域请求！）`,
         });
       });
   }
